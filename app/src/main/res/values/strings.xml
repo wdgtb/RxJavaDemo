@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">RxJavaDemo</string>
+    <string name="title0">创建</string>
+    <string name="title1">变换</string>
+    <string name="title2">过滤</string>
+    <string name="title3">结合</string>
+    <string name="title4">错误处理</string>
+    <string name="title5">辅助操作</string>
+    <string name="title6">条件和布尔操作</string>
+    <string name="title7">算术和聚合操作</string>
+    <string name="title8">连接操作</string>
+    <string name="title9">转换操作</string>
+</resources>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_create"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="create"/>
+
+        <Button
+            android:id="@+id/btn_range"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="range"/>
+
+        <Button
+            android:id="@+id/btn_defer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Defer"/>
+
+        <Button
+            android:id="@+id/btn_just"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Just"/>
+
+        <Button
+            android:id="@+id/btn_start_loop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="开启轮询"/>
+
+        <Button
+            android:id="@+id/btn_stop_loop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="关闭轮询"/>
+
+        <Button
+            android:id="@+id/btn_clean"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="清空"/>
+
+        <TextView
+            android:id="@+id/tv_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</ScrollView>
