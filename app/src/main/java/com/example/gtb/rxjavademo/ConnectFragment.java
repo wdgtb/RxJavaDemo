@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.gtb.Util.TextViewUtil;
+
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
@@ -20,9 +22,6 @@ import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by gtb on 16/8/15.
- */
 public class ConnectFragment extends Fragment {
 
     @Bind(R.id.tv_result)
@@ -43,9 +42,9 @@ public class ConnectFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        action1 = o -> tvResult.setText(tvResult.getText() + "action1:" + o + "\n");
+        action1 = o -> TextViewUtil.setText(tvResult, "action1:" + o);
         action2 = o -> {
-            tvResult.setText(tvResult.getText() + "action2:" + o + "\n");
+            TextViewUtil.setText(tvResult, "action2:" + o);
             if ((long) o == 3) {
                 observable.observeOn(AndroidSchedulers.mainThread()).subscribe(action1);
             }
@@ -54,14 +53,13 @@ public class ConnectFragment extends Fragment {
 
     /**
      * Connect 指示一个可连接的Observable开始发射数据给订阅者
+     * Publish 将一个普通的Observable转换为可连接的
      */
-    //Publish 将一个普通的Observable转换为可连接的
     private ConnectableObservable<Long> publishObserver() {
         Observable<Long> observable = Observable.interval(1, TimeUnit.SECONDS);
         observable.observeOn(Schedulers.newThread());
         return observable.publish();
     }
-
 
     @OnClick(R.id.btn_publish)
     void publish() {
@@ -70,19 +68,20 @@ public class ConnectFragment extends Fragment {
         subscription = observable.connect();
     }
 
-    //Replay操作符返回一个Connectable Observable 对象并且可以缓存其发射过的数据
+    /**
+     * replay 返回一个Connectable Observable对象并且可以缓存其发射过的数据
+     */
     private ConnectableObservable<Long> relayCountObserver() {
-        Observable<Long> obser = Observable.interval(1, TimeUnit.SECONDS);
-        obser.observeOn(Schedulers.newThread());
-        return obser.replay(2);//缓存个数2
+        Observable<Long> observable = Observable.interval(1, TimeUnit.SECONDS);
+        observable.observeOn(Schedulers.newThread());
+        return observable.replay(2);//缓存个数2
     }
 
     private ConnectableObservable<Long> relayTimeObserver() {
-        Observable<Long> obser = Observable.interval(1, TimeUnit.SECONDS);
-        obser.observeOn(Schedulers.newThread());
-        return obser.replay(3, TimeUnit.SECONDS);//缓存3秒内的
+        Observable<Long> observable = Observable.interval(1, TimeUnit.SECONDS);
+        observable.observeOn(Schedulers.newThread());
+        return observable.replay(3, TimeUnit.SECONDS);//缓存3秒内的
     }
-
 
     @OnClick(R.id.btn_reply)
     void reply() {
@@ -97,7 +96,6 @@ public class ConnectFragment extends Fragment {
         observable.observeOn(AndroidSchedulers.mainThread()).subscribe(action2);
         subscription = observable.connect();
     }
-
 
     @OnClick(R.id.btn_stop)
     void stop() {

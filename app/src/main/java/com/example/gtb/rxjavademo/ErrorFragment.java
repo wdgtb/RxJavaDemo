@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.gtb.Util.TextViewUtil;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -15,9 +17,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func2;
 
-/**
- * Created by gtb on 16/8/15.
- */
 public class ErrorFragment extends Fragment {
 
     @Bind(R.id.tv_result)
@@ -31,17 +30,24 @@ public class ErrorFragment extends Fragment {
         return view;
     }
 
+    /**
+     * retry 如果Observable发射了一个错误通知，重新订阅它，期待它正常终止。在发生错误的时候会重新进行订阅,而且可以重复多次，所以发射的数据可能会产生重复。如果重复指定次数还有错误的话就会将错误返回给观察者
+     * 当 .repeat() 接收到 .onCompleted() 事件后触发重订阅。
+     * 当 .retry() 接收到 .onError() 事件后触发重订阅。
+     */
     private Observable<Integer> retryObserver() {
-        return createObserver().retry(1);
+        return createObserver().retry(1);//重复1次
     }
 
+    /**
+     * retryWhen 指示Observable遇到错误时，将错误传递给另一个Observable来决定是否要重新给订阅这个Observable，新Observable处理错误，老的继续流程。
+     */
     private Observable<Integer> retryWhenObserver() {
         return createObserver().retryWhen(observable ->
-            observable.zipWith(Observable.just(1, 2, 3), new Func2<Throwable, Integer, Object>() {
-
+            observable.zipWith(Observable.just(1, 2), new Func2<Throwable, Integer, Object>() {
                 @Override
                 public Object call(Throwable throwable, Integer integer) {
-                    tvResult.setText(tvResult.getText() + throwable.getMessage() + integer + "\n");
+                    TextViewUtil.setText(tvResult, throwable.getMessage() + integer);
                     return throwable.getMessage() + integer;
                 }
             }));
@@ -49,10 +55,9 @@ public class ErrorFragment extends Fragment {
 
     private Observable<Integer> createObserver() {
         return Observable.create(new Observable.OnSubscribe<Integer>() {
-
             @Override
             public void call(Subscriber<? super Integer> subscriber) {
-                tvResult.setText(tvResult.getText() + "subscribe" + "\n");
+                TextViewUtil.setText(tvResult, "subscribe");
                 for (int i = 0; i < 3; i++) {
                     if (i == 2) {
                         subscriber.onError(new Exception("Exception-"));
@@ -69,17 +74,17 @@ public class ErrorFragment extends Fragment {
         retryObserver().subscribe(new Subscriber<Integer>() {
             @Override
             public void onCompleted() {
-                tvResult.setText(tvResult.getText() + "retry-onCompleted" + "\n");
+                TextViewUtil.setText(tvResult, "retry-onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                tvResult.setText(tvResult.getText() + "retry-onError:" + e.getMessage() + "\n");
+                TextViewUtil.setText(tvResult, "retry-onError:" + e.getMessage());
             }
 
             @Override
             public void onNext(Integer i) {
-                tvResult.setText(tvResult.getText() + "retry-onNext:" + i + "\n");
+                TextViewUtil.setText(tvResult, "retry-onNext:" + i);
             }
         });
     }
@@ -89,17 +94,17 @@ public class ErrorFragment extends Fragment {
         retryWhenObserver().subscribe(new Subscriber<Integer>() {
             @Override
             public void onCompleted() {
-                tvResult.setText(tvResult.getText() + "retryWhen-onCompleted" + "\n");
+                TextViewUtil.setText(tvResult, "retryWhen-onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                tvResult.setText(tvResult.getText() + "retryWhen-onError:" + e.getMessage() + "\n");
+                TextViewUtil.setText(tvResult, "retryWhen-onError:" + e.getMessage());
             }
 
             @Override
             public void onNext(Integer i) {
-                tvResult.setText(tvResult.getText() + "retryWhen-onNext:" + i + "\n");
+                TextViewUtil.setText(tvResult, "retryWhen-onNext:" + i);
             }
         });
     }

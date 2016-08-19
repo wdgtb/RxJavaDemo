@@ -69,4 +69,14 @@ public class MainFragment extends Fragment {
     void btnCustom() {
         open(new CustomFragment());
     }
+
+    @OnClick(R.id.btn_rxbinding)
+    void btnRxbinding() {
+        open(new RxbindingFragment());
+    }
+
+    @OnClick(R.id.btn_retrofit)
+    void btnRetrofit() {
+        open(new RetrofitFragment());
+    }
 }

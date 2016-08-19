@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.gtb.Util.TextViewUtil;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -15,9 +17,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-/**
- * Created by gtb on 16/8/15.
- */
 public class CombineFragment extends Fragment {
 
     @Bind(R.id.tv_result)
@@ -31,7 +30,10 @@ public class CombineFragment extends Fragment {
         return view;
     }
 
-
+    /**
+     * zip,zipWith
+     * 最终组合的数据的数量由发射数据最少的Observable来决定
+     */
     private Observable<String> zipWithObserver() {
         return createObserver(2).zipWith(createObserver(3), (s, s2) -> s + "-" + s2);
     }
@@ -46,24 +48,23 @@ public class CombineFragment extends Fragment {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 for (int i = 1; i <= index; i++) {
-                    tvResult.setText(tvResult.getText() + "emitted:" + index + "-" + i + "\n");
+                    TextViewUtil.setText(tvResult, "emitted:" + index + "-" + i);
                     subscriber.onNext(index + "-" + i);
                 }
             }
         }).subscribeOn(AndroidSchedulers.mainThread());
     }
 
-
     @OnClick(R.id.btn_zip)
     void zip() {
         zipObserver().observeOn(AndroidSchedulers.mainThread())
-            .subscribe(s -> tvResult.setText(tvResult.getText() + "zip:" + s + "\n"));
+            .subscribe(s -> TextViewUtil.setText(tvResult, "zip:" + s));
     }
 
     @OnClick(R.id.btn_zipWith)
     void zipWith() {
         zipWithObserver().observeOn(AndroidSchedulers.mainThread())
-            .subscribe(s -> tvResult.setText(tvResult.getText() + "zipWith:" + s + "\n"));
+            .subscribe(s -> TextViewUtil.setText(tvResult, "zipWith:" + s));
     }
 
     @OnClick(R.id.btn_clean)

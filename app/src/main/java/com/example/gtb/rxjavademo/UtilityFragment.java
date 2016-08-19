@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.gtb.Util.TextViewUtil;
+
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
@@ -17,9 +19,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-/**
- * Created by gtb on 16/8/15.
- */
 public class UtilityFragment extends Fragment {
 
     @Bind(R.id.tv_result)
@@ -35,10 +34,13 @@ public class UtilityFragment extends Fragment {
         return view;
     }
 
-    //using的3个参数
-    //创建这个一次性资源的函数
-    //创建Observable的函数
-    //释放资源的函数
+    /**
+     * using 创建一个只在Observable的生命周期内存在的一次性资源
+     * 3个参数:
+     * 创建这个一次性资源的函数
+     * 创建Observable的函数
+     * 释放资源的函数
+     */
     private Observable<Long> usingObserver() {
         return Observable.using(Animal::new, i -> Observable.timer(5000, TimeUnit.MILLISECONDS), Animal::release);
     }
@@ -47,29 +49,29 @@ public class UtilityFragment extends Fragment {
         Subscriber subscriber = new Subscriber() {
             @Override
             public void onCompleted() {
-                tvResult.setText(tvResult.getText() + "animal onCompleted" + "\n");
+                TextViewUtil.setText(tvResult, "animal onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                tvResult.setText(tvResult.getText() + "animal onError" + "\n");
+                TextViewUtil.setText(tvResult, "animal onError");
             }
 
             @Override
             public void onNext(Object o) {
-                tvResult.setText(tvResult.getText() + "animal eat" + "\n");
+                TextViewUtil.setText(tvResult, "animal eat");
             }
         };
 
         public Animal() {
-            tvResult.setText(tvResult.getText() + "create animal" + "\n");
+            TextViewUtil.setText(tvResult, "create animal");
             Observable.interval(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
         }
 
         public void release() {
-            tvResult.setText(tvResult.getText() + "animal released" + "\n");
+            TextViewUtil.setText(tvResult, "animal released");
             subscriber.unsubscribe();
         }
     }
@@ -81,17 +83,17 @@ public class UtilityFragment extends Fragment {
         subscriber = new Subscriber() {
             @Override
             public void onCompleted() {
-                tvResult.setText(tvResult.getText() + "onCompleted" + "\n");
+                TextViewUtil.setText(tvResult, "onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                tvResult.setText(tvResult.getText() + "onError" + "\n");
+                TextViewUtil.setText(tvResult, "onError");
             }
 
             @Override
             public void onNext(Object o) {
-                tvResult.setText(tvResult.getText() + "onNext" + "\n");
+                TextViewUtil.setText(tvResult, "onNext");
             }
         };
     }
